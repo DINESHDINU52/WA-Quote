@@ -1,0 +1,215 @@
+@import '../styles/fonts.css';
+@import '../styles/theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --brand-50: 240 246 254;
+    --brand-100: 219 234 254;
+    --brand-200: 191 219 254;
+    --brand-300: 147 197 253;
+    --brand-400: 96 165 250;
+    --brand-500: 59 130 246;
+    --brand-600: 37 99 235;
+    --brand-700: 29 78 216;
+    --brand-800: 30 64 175;
+    --brand-900: 30 58 138;
+    --brand-950: 23 37 84;
+  }
+
+  [data-theme="emerald"] {
+    --brand-50: 236 253 245;
+    --brand-100: 209 250 229;
+    --brand-200: 167 243 208;
+    --brand-300: 110 231 183;
+    --brand-400: 52 211 153;
+    --brand-500: 16 185 129;
+    --brand-600: 5 150 105;
+    --brand-700: 4 120 87;
+    --brand-800: 6 95 70;
+    --brand-900: 4 78 56;
+    --brand-950: 2 48 32;
+  }
+
+  [data-theme="indigo"] {
+    --brand-50: 245 243 255;
+    --brand-100: 224 231 255;
+    --brand-200: 199 210 254;
+    --brand-300: 165 180 252;
+    --brand-400: 129 140 248;
+    --brand-500: 99 102 241;
+    --brand-600: 79 70 229;
+    --brand-700: 67 56 202;
+    --brand-800: 55 48 163;
+    --brand-900: 49 46 129;
+    --brand-950: 30 27 75;
+  }
+
+  [data-theme="coral"] {
+    --brand-50: 255 241 242;
+    --brand-100: 255 228 230;
+    --brand-200: 254 205 211;
+    --brand-300: 253 164 175;
+    --brand-400: 251 113 133;
+    --brand-500: 244 63 94;
+    --brand-600: 225 29 72;
+    --brand-700: 190 24 74;
+    --brand-800: 159 18 57;
+    --brand-900: 136 19 55;
+    --brand-950: 76 5 25;
+  }
+
+  [data-theme="teal"] {
+    --brand-50: 240 253 250;
+    --brand-100: 204 251 241;
+    --brand-200: 153 246 228;
+    --brand-300: 94 234 212;
+    --brand-400: 45 212 191;
+    --brand-500: 20 184 166;
+    --brand-600: 13 148 136;
+    --brand-700: 15 118 110;
+    --brand-800: 17 94 89;
+    --brand-900: 19 78 74;
+    --brand-950: 15 23 42;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-ink-50 text-ink-900;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Smooth page transitions */
+  main {
+    animation: fadeSlideIn 0.3s ease-out;
+  }
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  /* Animate-in utility */
+  .animate-in {
+    animation: animateIn 0.4s ease-out forwards;
+  }
+  @keyframes animateIn {
+    from {
+      opacity: 0;
+      transform: scale(0.96) translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  /* Slow pulse for timer last-2-min state */
+  .animate-pulse-slow {
+    animation: pulseSlow 1.4s ease-in-out infinite;
+  }
+  @keyframes pulseSlow {
+    0%, 100% { box-shadow: 0 12px 40px -8px rgba(244, 63, 94, 0.45); }
+    50% { box-shadow: 0 12px 40px -4px rgba(244, 63, 94, 0.85), 0 0 0 4px rgba(244, 63, 94, 0.15); }
+  }
+  /* Toast animations */
+  .animate-toast-in {
+    animation: toastIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .animate-toast-out {
+    animation: toastOut 0.18s ease-in forwards;
+  }
+  @keyframes toastIn {
+    from {
+      opacity: 0;
+      transform: translateX(120%) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+  @keyframes toastOut {
+    from {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(40px) scale(0.95);
+    }
+  }
+  @keyframes toast-progress {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-lg border border-ink-200/60 bg-white/90 shadow-card backdrop-blur-md transition-all duration-300;
+  }
+  .card-interactive {
+    @apply card hover:-translate-y-[2px] hover:border-brand-200 hover:shadow-md hover:shadow-brand-500/5;
+  }
+  .input {
+    @apply w-full rounded-md border border-ink-200 bg-white/70 px-3 py-2 text-sm
+           text-ink-900 placeholder:text-ink-400 transition-all duration-200
+           focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-brand-500/10;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-medium uppercase tracking-wider text-ink-500;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium
+           transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-brand-500/10
+           disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.97];
+  }
+  .btn-primary {
+    @apply btn bg-gradient-to-r from-brand-600 to-brand-700 text-white shadow-sm 
+           hover:from-brand-500 hover:to-brand-600 hover:shadow-md hover:shadow-brand-500/10;
+  }
+  .btn-secondary {
+    @apply btn border border-ink-200 bg-white/80 text-ink-700 backdrop-blur-sm 
+           hover:bg-brand-50/50 hover:text-brand-700 hover:border-brand-300;
+  }
+  .btn-danger {
+    @apply btn border border-red-200 bg-white/80 text-red-600 backdrop-blur-sm 
+           hover:bg-red-50/60 hover:text-red-700 hover:border-red-300;
+  }
+}
+
+/* Custom Webkit scrollbar for premium feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #dde3e7;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #bcc6cc;
+}
+
+/* Authentic handwritten sticky notes font */
+.font-handwriting {
+  font-family: 'Caveat', 'Kalam', 'Segoe Print', 'Bradley Hand', 'Chalkboard SE', cursive;
+}
+
+

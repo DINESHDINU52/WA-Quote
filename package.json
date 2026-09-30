@@ -1,0 +1,50 @@
+{
+  "name": "wa-quote",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WA Quote — Billing & Invoicing ERP",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.9.1",
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-dropdown-menu": "^2.1.2",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.2",
+    "@tanstack/react-query": "^5.59.16",
+    "@types/pdfmake": "^0.2.13",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "firebase": "^11.0.1",
+    "firebase-admin": "^12.7.0",
+    "lucide-react": "^0.460.0",
+    "motion": "^12.39.0",
+    "next": "14.2.18",
+    "pdfmake": "^0.2.23",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.2",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.18",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.3"
+  }
+}

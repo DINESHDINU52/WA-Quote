@@ -1,0 +1,170 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Helpers ---------------------------------------------------
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function profileRole(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data.role;
+    }
+
+    function isSuperAdminEmail() {
+      return isSignedIn() && (
+        request.auth.token.email in [
+          'chncbe2026@gmail.com',
+          'itsupport@chnindia.com',
+          'info@chnindia.com'
+        ] ||
+        (request.auth.token.email != null && request.auth.token.email.matches('.*@chnindia[.]com'))
+      );
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        profileRole(request.auth.uid) in ['admin', 'md'] ||
+        isSuperAdminEmail()
+      );
+    }
+
+    function isAccountant() {
+      return isSignedIn() && (profileRole(request.auth.uid) in ['md', 'admin', 'accountant'] || isSuperAdminEmail());
+    }
+
+    function isStaff() {
+      return isSignedIn() && (
+        profileRole(request.auth.uid) in ['md', 'admin', 'accountant', 'sales', 'viewer'] ||
+        isSuperAdminEmail()
+      );
+    }
+
+    function canEditDocs() {
+      return isSignedIn() && (
+        profileRole(request.auth.uid) in ['md', 'admin', 'accountant', 'sales'] ||
+        isSuperAdminEmail()
+      );
+    }
+
+    // ---------- Users -----------------------------------------------------
+    // Self-service create on first sign-in (always 'viewer'); only admin can promote.
+    match /users/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && (
+                       (request.auth.uid == uid && request.resource.data.role == 'viewer') ||
+                       isAdmin()
+                     );
+      allow update: if isAdmin() || (isSignedIn() && request.auth.uid == uid && isSuperAdminEmail());
+      allow delete: if isAdmin();
+    }
+
+    // ---------- Settings (admin write, staff read) ------------------------
+    match /settings/{docId} {
+      // settings/access must be readable by ANY authenticated user (for login whitelist check)
+      allow read: if docId == 'access' && isSignedIn();
+      allow read: if docId != 'access' && isStaff();
+      allow write: if isAdmin();
+    }
+
+    // ---------- Customers (staff read, admin/accountant write) -----------
+    match /customers/{id} {
+      allow read: if isStaff();
+      allow create, update: if isAccountant() || canEditDocs();
+      allow delete: if isAdmin() || isAccountant();
+    }
+
+    // ---------- Products / Devices ---------------------------------------
+    match /products/{id} {
+      allow read: if isStaff();
+      allow create, update, delete: if canEditDocs();
+    }
+
+    // ---------- Counters: read by staff, write only by transactions  -----
+    // Transactions are authenticated client-side; rule guards intent only.
+    match /counters/{key} {
+      allow read: if isStaff();
+      allow create, update: if canEditDocs();
+      allow delete: if isAdmin();
+    }
+
+    // ---------- Documents (quotation/proforma/invoice/credit-note) -------
+    match /quotations/{id} {
+      allow read: if true;
+      allow create, update: if canEditDocs();
+      allow delete: if isAdmin();
+    }
+    match /proformas/{id} {
+      allow read: if true;
+      allow create, update: if canEditDocs();
+      allow delete: if isAdmin();
+    }
+    match /invoices/{id} {
+      allow read: if true;
+      allow create, update: if isAccountant();
+      allow delete: if isAdmin();
+    }
+    match /creditNotes/{id} {
+      allow read: if true;
+      allow create, update: if isAccountant();
+      allow delete: if isAdmin();
+    }
+
+    // ---------- Payments --------------------------------------------------
+    match /payments/{id} {
+      allow read: if isStaff();
+      allow create, update: if isAccountant();
+      allow delete: if isAdmin();
+    }
+
+    // ---------- Tasks (To-Do list per user) ------------------------------
+    match /tasks/{taskId} {
+      // User can read tasks owned by them; admins/MD see all
+      allow read: if isSignedIn() && (
+        resource.data.ownerUid == request.auth.uid || isAdmin()
+      );
+      allow list: if isStaff();
+      // Owner can create their own; admins/MD can create for anyone
+      allow create: if isSignedIn() && (
+        request.resource.data.ownerUid == request.auth.uid || isAdmin()
+      );
+      // Owner can update their own; admins/MD can edit any
+      allow update: if isSignedIn() && (
+        resource.data.ownerUid == request.auth.uid || isAdmin()
+      );
+      allow delete: if isSignedIn() && (
+        resource.data.ownerUid == request.auth.uid || isAdmin()
+      );
+    }
+
+    // ---------- Audit log: append-only -----------------------------------
+    match /audit/{id} {
+      allow read: if isAdmin();
+      allow create: if isSignedIn();
+      allow update, delete: if false;
+    }
+
+    // ---------- Common Shared Sticky Notes (Staff collaborative) ----------
+    match /sticky_notes/{id} {
+      allow read, create, update, delete: if isSignedIn();
+    }
+
+    // ---------- Multi-Company Management ----------------------------------
+    match /companies/{id} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ---------- Purchase Orders (PO) --------------------------------------
+    match /purchaseOrders/{id} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // ---------- API Keys for CRM Integration ------------------------------
+    match /api_keys/{id} {
+      allow read, write: if true;
+    }
+  }
+}
