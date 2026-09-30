@@ -1,0 +1,213 @@
+{
+  "info": {
+    "_postman_id": "wa-quote-crm-api-collection",
+    "name": "WA Quote - CRM Integration API",
+    "description": "Postman Collection for WA Quote (Billing & Invoicing ERP). Use this to test and configure integrations with Zoho CRM, Salesforce, HubSpot, or custom webhook systems.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://waquote.chnindia.com",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "YOUR_API_KEY_HERE",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "x-api-key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. CRM Summary Metrics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/crm/summary",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "crm",
+            "summary"
+          ],
+          "query": [
+            {
+              "key": "companyId",
+              "value": "",
+              "description": "Optional: Filter by issuing entity",
+              "disabled": true
+            }
+          ]
+        },
+        "description": "Fetches aggregated revenue, total collected, unpaid balance, proforma/invoice counts, collection rates, and recent activity."
+      },
+      "response": []
+    },
+    {
+      "name": "2. List Documents (All)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/crm/documents?docType=all&limit=25&page=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "crm",
+            "documents"
+          ],
+          "query": [
+            {
+              "key": "docType",
+              "value": "all",
+              "description": "proforma | invoice | quotation | po | all"
+            },
+            {
+              "key": "paymentStatus",
+              "value": "unpaid",
+              "description": "paid | unpaid | partial | all",
+              "disabled": true
+            },
+            {
+              "key": "status",
+              "value": "issued",
+              "description": "issued | draft | cancelled | all",
+              "disabled": true
+            },
+            {
+              "key": "search",
+              "value": "",
+              "description": "Customer name, email, phone, or doc number",
+              "disabled": true
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            }
+          ]
+        },
+        "description": "List documents with pagination and filtering by customer, payment status, or document type."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Search Unpaid Proformas",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/crm/documents?docType=proforma&paymentStatus=unpaid&limit=50",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "crm",
+            "documents"
+          ],
+          "query": [
+            {
+              "key": "docType",
+              "value": "proforma"
+            },
+            {
+              "key": "paymentStatus",
+              "value": "unpaid"
+            },
+            {
+              "key": "limit",
+              "value": "50"
+            }
+          ]
+        },
+        "description": "Pull overdue / pending payments directly into CRM account or deal views."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Get Document Details by ID or Number",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/crm/documents/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "crm",
+            "documents",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "PI-2026-0001",
+              "description": "Can be Firestore Document ID or human number like PI-2026-0001"
+            }
+          ]
+        },
+        "description": "Fetches single document details, itemized lines, payment installments, and Drive PDF link."
+      },
+      "response": []
+    }
+  ]
+}

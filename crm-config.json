@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "WA Quote CRM Integration Configuration",
+  "version": "1.0.0",
+  "provider": "WA Quote (CHN TECHNOLOGIES PVT LTD)",
+  "connection": {
+    "baseUrl": "https://waquote.chnindia.com",
+    "authType": "API_KEY",
+    "headerName": "x-api-key",
+    "alternativeHeader": "Authorization: Bearer <API_KEY>",
+    "apiKeyInstructions": "To generate or retrieve your API key: Open WA Quote (https://waquote.chnindia.com) -> Settings -> API & CRM Integration -> Click 'Create New API Key'."
+  },
+  "endpoints": {
+    "getFinancialSummary": {
+      "path": "/api/v1/crm/summary",
+      "method": "GET",
+      "description": "Returns high-level sales metrics, total collected, unpaid amounts, proforma/invoice breakdowns.",
+      "queryParams": {
+        "companyId": {
+          "type": "string",
+          "required": false,
+          "description": "Optional filter by issuing company ID"
+        }
+      }
+    },
+    "listDocuments": {
+      "path": "/api/v1/crm/documents",
+      "method": "GET",
+      "description": "Search and filter quotations, proformas, invoices, and purchase orders.",
+      "queryParams": {
+        "docType": {
+          "type": "string",
+          "enum": ["all", "proforma", "invoice", "quotation", "po"],
+          "default": "all"
+        },
+        "paymentStatus": {
+          "type": "string",
+          "enum": ["all", "paid", "unpaid", "partial"],
+          "default": "all"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["all", "issued", "draft", "cancelled"],
+          "default": "all"
+        },
+        "search": {
+          "type": "string",
+          "description": "Customer name, email, phone, or doc number"
+        },
+        "limit": {
+          "type": "integer",
+          "default": 50,
+          "max": 200
+        },
+        "page": {
+          "type": "integer",
+          "default": 1
+        }
+      }
+    },
+    "getDocumentDetails": {
+      "path": "/api/v1/crm/documents/{id}",
+      "method": "GET",
+      "description": "Fetch document by ID or Document Number (e.g. PI-2026-0001, QT-2026-0001). Includes line items, payment history, and PDF link.",
+      "pathParams": {
+        "id": {
+          "type": "string",
+          "required": true,
+          "example": "PI-2026-0001"
+        }
+      }
+    }
+  },
+  "fieldMappings": {
+    "dealOrLead": {
+      "customerName": "customer.name",
+      "company": "customer.company",
+      "email": "customer.email",
+      "phone": "customer.phone",
+      "gstin": "customer.gstin",
+      "amount": "grandTotal",
+      "tax": "taxTotal",
+      "status": "paymentStatus",
+      "quotationNumber": "number",
+      "invoiceNumber": "number",
+      "pdfDownloadUrl": "driveUrl",
+      "installments": "installments"
+    }
+  },
+  "crmExamples": {
+    "zohoDeluge": "// Zoho CRM Deluge Custom Function\napiKey = \"YOUR_API_KEY\";\nheaders = Map();\nheaders.put(\"x-api-key\", apiKey);\nheaders.put(\"Accept\", \"application/json\");\n\n// 1. Fetch document by number\ndocNum = \"PI-2026-0001\";\nresponse = invokeurl\n[\n    url: \"https://waquote.chnindia.com/api/v1/crm/documents/\" + docNum\n    type: GET\n    headers: headers\n];\ninfo response;",
+    "nodeJs": "const res = await fetch('https://waquote.chnindia.com/api/v1/crm/summary', {\n  headers: { 'x-api-key': 'YOUR_API_KEY' }\n});\nconst data = await res.json();\nconsole.log(data);",
+    "python": "import requests\n\nres = requests.get(\n    'https://waquote.chnindia.com/api/v1/crm/summary',\n    headers={'x-api-key': 'YOUR_API_KEY'}\n)\nprint(res.json())"
+  }
+}

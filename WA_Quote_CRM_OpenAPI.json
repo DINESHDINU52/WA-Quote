@@ -1,0 +1,356 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "WA Quote CRM Integration API",
+    "description": "REST API to connect WA Quote (Billing & Invoicing ERP) with external CRMs (Zoho CRM, Salesforce, HubSpot, ERPNext, Zapier, Make, custom webhooks). Allows CRMs to fetch financial summaries, pull quotations, track proforma invoices, monitor payment installments, and retrieve Google Drive PDF links.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "CHN Technologies IT Support",
+      "email": "itsupport@chnindia.com",
+      "url": "https://waquote.chnindia.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://waquote.chnindia.com",
+      "description": "Production Live Server"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "description": "API key generated in WA Quote -> Settings -> API & CRM Integration. Can also be sent as 'Authorization: Bearer <key>'."
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Standard Bearer token header: Authorization: Bearer <YOUR_API_KEY>"
+      }
+    },
+    "schemas": {
+      "ApiResponseError": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean", "example": false },
+          "error": { "type": "string", "example": "Missing API key or invalid credentials." }
+        }
+      },
+      "CrmSummaryMetrics": {
+        "type": "object",
+        "properties": {
+          "totalRevenue": { "type": "number", "example": 1540000 },
+          "totalCollected": { "type": "number", "example": 1280000 },
+          "totalOutstanding": { "type": "number", "example": 260000 },
+          "collectionRate": { "type": "number", "example": 83.12 },
+          "proformas": {
+            "type": "object",
+            "properties": {
+              "totalCount": { "type": "integer", "example": 45 },
+              "totalAmount": { "type": "number", "example": 850000 },
+              "paidCount": { "type": "integer", "example": 32 },
+              "paidAmount": { "type": "number", "example": 680000 },
+              "unpaidCount": { "type": "integer", "example": 8 },
+              "unpaidAmount": { "type": "number", "example": 120000 },
+              "partialCount": { "type": "integer", "example": 5 },
+              "partialAmount": { "type": "number", "example": 50000 }
+            }
+          },
+          "invoices": {
+            "type": "object",
+            "properties": {
+              "totalCount": { "type": "integer", "example": 30 },
+              "totalAmount": { "type": "number", "example": 690000 }
+            }
+          },
+          "quotations": {
+            "type": "object",
+            "properties": {
+              "totalCount": { "type": "integer", "example": 80 },
+              "totalAmount": { "type": "number", "example": 2400000 }
+            }
+          },
+          "recentActivity": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "example": "pi_171123456" },
+                "number": { "type": "string", "example": "PI-2026-0042" },
+                "customerName": { "type": "string", "example": "Acme Technologies Pvt Ltd" },
+                "type": { "type": "string", "example": "proforma" },
+                "amount": { "type": "number", "example": 45000 },
+                "paymentStatus": { "type": "string", "example": "paid" },
+                "updatedAt": { "type": "string", "format": "date-time" }
+              }
+            }
+          }
+        }
+      },
+      "BillingDocument": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "doc_171209384" },
+          "number": { "type": "string", "example": "PI-2026-0012" },
+          "type": { "type": "string", "enum": ["proforma", "invoice", "quotation", "po"], "example": "proforma" },
+          "status": { "type": "string", "enum": ["draft", "issued", "cancelled"], "example": "issued" },
+          "issueDate": { "type": "string", "example": "2026-09-15" },
+          "dueDate": { "type": "string", "example": "2026-09-30" },
+          "customer": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "example": "Apex Solutions" },
+              "company": { "type": "string", "example": "Apex Solutions LLP" },
+              "email": { "type": "string", "example": "billing@apexsolutions.com" },
+              "phone": { "type": "string", "example": "9876543210" },
+              "gstin": { "type": "string", "example": "33AABCT1332L1Z1" },
+              "billingAddress": { "type": "string", "example": "123 Mount Road, Anna Salai, Chennai, TN" }
+            }
+          },
+          "subtotal": { "type": "number", "example": 50000 },
+          "taxTotal": { "type": "number", "example": 9000 },
+          "grandTotal": { "type": "number", "example": 59000 },
+          "paidAmount": { "type": "number", "example": 59000 },
+          "balanceAmount": { "type": "number", "example": 0 },
+          "paymentStatus": { "type": "string", "enum": ["paid", "unpaid", "partial"], "example": "paid" },
+          "driveUrl": { "type": "string", "example": "https://drive.google.com/file/d/1A2B3C4D5E/view" },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "description": { "type": "string", "example": "Biometric Attendance Device (X990)" },
+                "hsn": { "type": "string", "example": "8471" },
+                "qty": { "type": "number", "example": 2 },
+                "rate": { "type": "number", "example": 25000 },
+                "gstRate": { "type": "number", "example": 18 },
+                "total": { "type": "number", "example": 59000 }
+              }
+            }
+          },
+          "installments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "example": "inst_1" },
+                "amount": { "type": "number", "example": 59000 },
+                "paidAt": { "type": "string", "example": "2026-09-20" },
+                "reference": { "type": "string", "example": "NEFT-UTR-891823" },
+                "method": { "type": "string", "example": "Bank Transfer" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    { "ApiKeyAuth": [] },
+    { "BearerAuth": [] }
+  ],
+  "paths": {
+    "/api/v1/crm/summary": {
+      "get": {
+        "summary": "CRM Financial Summary & Metrics",
+        "description": "Fetches aggregated revenue, collected payments, unpaid balances, proforma/invoice counts, collection rates, and recent billing activity for CRM analytics cards.",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "query",
+            "required": false,
+            "description": "Optional filter by issuing company ID",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Financial summary metrics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/CrmSummaryMetrics" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ApiResponseError" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/crm/documents": {
+      "get": {
+        "summary": "Search & List Billing Documents",
+        "description": "Searches and filters quotations, proformas, invoices, and purchase orders. Ideal for displaying linked documents under CRM Deals, Contacts, or Accounts.",
+        "parameters": [
+          {
+            "name": "docType",
+            "in": "query",
+            "required": false,
+            "description": "Type of document",
+            "schema": {
+              "type": "string",
+              "enum": ["all", "proforma", "invoice", "quotation", "po"],
+              "default": "all"
+            }
+          },
+          {
+            "name": "paymentStatus",
+            "in": "query",
+            "required": false,
+            "description": "Filter by payment status",
+            "schema": {
+              "type": "string",
+              "enum": ["all", "paid", "unpaid", "partial"]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Filter by issue status",
+            "schema": {
+              "type": "string",
+              "enum": ["all", "issued", "draft", "cancelled"],
+              "default": "all"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Search keyword matching document number, customer name, company, email, or phone number",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Start date filter (YYYY-MM-DD or epoch milliseconds)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "End date filter (YYYY-MM-DD or epoch milliseconds)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "companyId",
+            "in": "query",
+            "required": false,
+            "description": "Filter by issuing company identifier",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of records per page (1 - 200, default 50)",
+            "schema": { "type": "integer", "default": 50 }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number (default 1)",
+            "schema": { "type": "integer", "default": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Documents list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean", "example": true },
+                    "documents": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/BillingDocument" }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": { "type": "integer", "example": 120 },
+                        "page": { "type": "integer", "example": 1 },
+                        "limit": { "type": "integer", "example": 50 },
+                        "totalPages": { "type": "integer", "example": 3 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ApiResponseError" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/crm/documents/{id}": {
+      "get": {
+        "summary": "Get Single Document by ID or Number",
+        "description": "Fetches full details for a document using either its internal Firestore ID (e.g. `doc_123`) or its human-readable number (e.g. `PI-2026-0042` or `QT-2026-0015`). Includes line items, payment installments, customer address, and Google Drive PDF link.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Firestore Document ID OR Document Number (e.g. PI-2026-0001, QT-2026-0001)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean", "example": true },
+                    "document": { "$ref": "#/components/schemas/BillingDocument" }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document not found",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ApiResponseError" } }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ApiResponseError" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}
