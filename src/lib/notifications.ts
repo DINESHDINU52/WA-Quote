@@ -94,7 +94,7 @@ export function showNotification(opts: NotifyOptions): boolean {
     const n = new Notification(opts.title, {
       body: opts.body,
       tag: opts.tag,
-      icon: opts.icon || '/CHN QUOTEDESK.png',
+      icon: opts.icon || '/WA Quote  - 2.png',
       silent: opts.silent
       // renotify is unreliable across browsers — relying on tag override instead
     } as NotificationOptions);

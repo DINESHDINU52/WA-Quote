@@ -319,7 +319,7 @@ function LoginInner() {
                 {/* Subtle ambient core glow */}
                 <div className="absolute inset-0 bg-brand-500/5 rounded-2xl blur-sm pointer-events-none" />
 
-                <img src="/CHN QUOTEDESK.png" alt="WA Quote" className="relative h-14 w-auto object-contain rounded-xl z-10 transition-transform duration-500 hover:scale-110" />
+                <img src="/WA Quote  - 2.png" alt="WA Quote" className="relative h-16 w-16 object-contain rounded-xl z-10 transition-transform duration-500 hover:scale-110 drop-shadow-md" />
               </div>
               <div className="text-center">
                 <div className="text-2xl font-black tracking-tight text-slate-900 flex items-center gap-1.5 justify-center">

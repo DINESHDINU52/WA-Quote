@@ -46,15 +46,15 @@ function LoadingScreen() {
   return (
     <div className="grid min-h-screen place-items-center bg-ink-50">
       <div className="flex flex-col items-center gap-6 animate-in fade-in duration-500">
-        <div className="relative">
+        <div className="relative p-3 rounded-3xl bg-white/90 shadow-xl shadow-brand-500/10 border border-brand-100/60">
           <img
-            src="/CHN QUOTEDESK.png"
+            src="/WA Quote  - 2.png"
             alt="WA Quote"
-            className="h-32 w-auto object-contain animate-pulse"
+            className="h-24 w-24 object-contain animate-pulse"
           />
         </div>
         <div className="text-center">
-          <div className="mt-1 text-sm text-ink-500">Loading...</div>
+          <div className="mt-1 text-sm font-semibold text-ink-600">Loading WA Quote...</div>
         </div>
         <div className="flex gap-1.5">
           <div className="h-2 w-2 rounded-full bg-brand-500 animate-bounce [animation-delay:0ms]" />

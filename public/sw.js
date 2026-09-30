@@ -2,7 +2,8 @@ const CACHE_NAME = 'wa-quote-v2';
 const PRECACHE_URLS = [
   '/',
   '/dashboard',
-  '/CHN QUOTEDESK.png',
+  '/WA Quote  - 1.png',
+  '/WA Quote  - 2.png',
   '/chn-logo.png',
   '/favicon.ico'
 ];

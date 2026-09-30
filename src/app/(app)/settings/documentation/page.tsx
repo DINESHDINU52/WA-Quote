@@ -70,7 +70,10 @@ export default function DocumentationPage() {
         </div>
         <div className="px-6 py-3 bg-brand-600/5 border-t border-brand-100/60 flex items-center justify-between">
           <span className="text-[11px] font-bold text-ink-500">Version {APP_VERSION} • Released {RELEASE_DATE}</span>
-          <span className="text-[11px] font-bold text-brand-600">WA Quote — Billing & Invoicing ERP</span>
+          <div className="flex items-center gap-2">
+            <img src="/WA Quote  - 1.png" alt="WA Quote" className="h-6 w-auto object-contain" />
+            <span className="text-[11px] font-bold text-brand-600">— Billing & Invoicing ERP</span>
+          </div>
         </div>
       </div>
 
@@ -808,10 +811,10 @@ export default function DocumentationPage() {
               </div>
             </div>
           </div>
-          <div className="rounded-xl border border-ink-100/60 bg-ink-50/20 p-4">
-            <h3 className="text-sm font-bold text-ink-800 mb-2">Platform</h3>
-            <div className="space-y-2 text-xs text-ink-600">
-              <div className="font-bold text-ink-800">WA Quote SaaS ERP</div>
+          <div className="rounded-xl border border-ink-100/60 bg-ink-50/20 p-4 flex items-center gap-3">
+            <img src="/WA Quote  - 2.png" alt="WA Quote" className="h-12 w-12 object-contain rounded-xl shadow-sm border border-brand-100 bg-white p-1" />
+            <div className="space-y-1 text-xs text-ink-600">
+              <div className="font-bold text-ink-800 text-sm">WA Quote SaaS ERP</div>
               <div>Customizable Billing & Quotation Suite</div>
             </div>
           </div>

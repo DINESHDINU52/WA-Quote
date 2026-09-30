@@ -40,14 +40,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid min-h-screen grid-cols-[260px_1fr] bg-ink-50">
       <aside className="flex flex-col border-r border-ink-200/60 bg-white/95 backdrop-blur-md">
-        <div className="flex flex-col items-center px-5 py-6 border-b border-ink-100/50">
-          <div className="relative group p-1 rounded-2xl bg-gradient-to-b from-brand-50 to-brand-100/50 border border-brand-100 shadow-sm transition-transform duration-300 hover:scale-[1.02]">
-            <img src="/CHN QUOTEDESK.png" alt="WA Quote" className="h-24 w-auto object-contain rounded-xl" />
-          </div>
-          <div className="mt-3 text-center">
-            <div className="text-sm font-bold tracking-tight text-ink-900">WA Quote</div>
-            <div className="text-[10px] font-semibold text-brand-600 tracking-wider uppercase">Business Suite</div>
-          </div>
+        <div className="flex flex-col items-center px-4 py-5 border-b border-ink-100/50">
+          <Link href="/dashboard" className="flex flex-col items-center group transition-transform duration-300 hover:scale-[1.02]">
+            <div className="relative px-3 py-2 rounded-xl transition-colors duration-200 group-hover:bg-brand-50/50">
+              <img
+                src="/WA Quote  - 1.png"
+                alt="WA Quote"
+                className="h-10 w-auto object-contain drop-shadow-sm"
+              />
+            </div>
+            <div className="mt-1 text-[10px] font-bold text-brand-600 tracking-wider uppercase">
+              Business Suite
+            </div>
+          </Link>
         </div>
         <nav className="flex-1 space-y-1.5 px-3.5 py-5">
           {NAV.map(({ href, label, icon: Icon }) => {
